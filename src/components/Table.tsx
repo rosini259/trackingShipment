@@ -15,45 +15,47 @@ const Table = () => {
   return (
     <>
       {showUi && (
-        <div className="">
-          <h1 className="font-bold text-xl mr-8 mb-4 text-end">
-            {t("shipment details")}
-          </h1>
-          <div className="flex justify-between flex-row-reverse max-sm:justify-center max-sm:flex-wrap gap-3">
-            <table className="h-[35vh] w-[60%] max-sm:w-[100%]">
-              <thead>
-                <tr>
-                  <th>{t("details")}</th>
-                  <th>{t("time")}</th>
-                  <th>{t("date")}</th>
-                  <th>{t("hub")}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {data.TransitEvents?.map((event) => (
-                  <tr key={event.timestamp} className="text-center h-10 ">
-                    <td className="px-2">
-                      <div className="">
-                        {event.state}
-                        <div className="text-yellow-500">{event.reason}</div>
-                      </div>
-                    </td>
-                    <td className="px-2">
-                      {dateConverterToTime(event.timestamp)}
-                    </td>
-                    <td className="px-2">
-                      {event.timestamp.replace(
-                        /T\d{2}:\d{2}:\d{2}\.\d{3}Z/,
-                        ""
-                      )}
-                    </td>
-                    <td className="px-2">{event.hub}</td>
+        <div className="container h-auto flex sm:justify-between flex-row-reverse max-sm:justify-center max-sm:flex-wrap max-sm:gap-5">
+          <div className="flex flex-col max-sm:w-full max-sm:overflow-x-scroll">
+            <h1 className="font-semibold text-xl mb-4 text-end">
+              {t("shipment details")}
+            </h1>
+            <div className="h-[45vh] max-sm:h-auto w-full sm:overflow-auto max-sm:overflow-x-scroll">
+              <table className="w-full">
+                <thead>
+                  <tr>
+                    <th className="text-gray-500 text-end">{t("details")}</th>
+                    <th className="text-gray-500 text-end">{t("time")}</th>
+                    <th className="text-gray-500 text-end">{t("date")}</th>
+                    <th className="text-gray-500 text-end">{t("hub")}</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-            <Address />
+                </thead>
+                <tbody>
+                  {data.TransitEvents?.map((event) => (
+                    <tr key={event.timestamp} className="text-end h-10 ">
+                      <td className="">
+                        <div className="text-sm">
+                          {event.state}
+                          <div className="text-yellow-500">{event.reason}</div>
+                        </div>
+                      </td>
+                      <td className="text-sm">
+                        {dateConverterToTime(event.timestamp)}
+                      </td>
+                      <td className="text-sm">
+                        {event.timestamp.replace(
+                          /T\d{2}:\d{2}:\d{2}\.\d{3}Z/,
+                          ""
+                        )}
+                      </td>
+                      <td className="text-sm">{event.hub}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
+          <Address />
         </div>
       )}
     </>

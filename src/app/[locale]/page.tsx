@@ -4,10 +4,11 @@ import ShippmentStatus from "@/components/ShippmentStatus";
 import store from "../store";
 import { Provider } from "react-redux";
 import Table from "@/components/Table";
-export default function Home() {
+export default function Home({ params }: { params: { locale: string } }) {
+  const lang = params.locale;
   return (
     <Provider store={store}>
-      <main>
+      <main dir={lang === "en" ? "ltr" : "rtl"}>
         <NavBar />
         <hr />
         <ShippmentStatus />

@@ -32,5 +32,7 @@
   "hub": "فرع",
   "date": "التاريخ",
   "time": "الوقت",
-  "details": "التفاصيل"
+  "details": "التفاصيل",
+  "tracking number":"رقم التتبع",
+  "there is problem in your shipment?":"هل يوجد مشكله في شحنتك؟"
 }
