@@ -1,87 +1,28 @@
 "use client";
-import { RootState } from "@/app/store";
-import { newData, showUi } from "@/features/counter/shipmentSlice";
-import data from "@/types";
-import { dateConverterToTime, fetchdata } from "@/utils";
-import { useTranslations } from "next-intl";
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+
+import useShippmentStatus from "@/hooks/useShippmentStatus";
+import { dateConverterToTime } from "@/utils/dateConverterToTime";
+import ProgressbarStatus from "./common/ProgressbarStatus";
+
 const ShippmentStatus = () => {
-  const dispatch = useDispatch();
-  const data: data = useSelector((state: RootState) => state.newData.value);
-  const shipmentNumberState = useSelector(
-    (state: RootState) => state.shipmentNumber.value
-  );
-  useEffect(() => {
-    if (shipmentNumberState != 0) {
-      fetchdata(shipmentNumberState).then((data) => {
-        dispatch(newData(data));
-      });
-    }
-  }, [dispatch, shipmentNumberState]);
-
-  const t = useTranslations();
-
-  const dateLastUpdate = data.CurrentStatus
-    ? new Date(data.CurrentStatus.timestamp)
-    : new Date();
-
-  const days = [
-    t("Sunday"),
-    t("Monday"),
-    t("Tuesday"),
-    t("Wednesday"),
-    t("Thursday"),
-    t("Friday"),
-    t("Saturday"),
-  ];
-  const dayName = days[dateLastUpdate.getUTCDay()];
-
-  let stateColor = "";
-  let progressOne = "";
-  let progressTwo = "";
-  let progressThree = "";
-  let progressFour = "";
-  let checkOne = ""; // not used now
-  let checkTwo = ""; // not used now
-  let checkThree = ""; // not used now
-  let checkFour = "";
-  let CurrentStatusState = data.CurrentStatus?.state;
-  switch (CurrentStatusState) {
-    case "DELIVERED":
-      stateColor = "text-green-500";
-      progressOne = "bg-emerald-700";
-      progressTwo = "bg-emerald-700";
-      progressThree = "bg-emerald-700";
-      progressFour = "bg-emerald-700";
-      break;
-    case "DELIVERED_TO_SENDER":
-      stateColor = "text-yellow-500";
-      progressOne = "bg-yellow-500";
-      progressTwo = "bg-yellow-500";
-      progressThree = "bg-gray-300";
-      checkFour = "border shadow bg-white";
-      break;
-    case "CANCELLED":
-      stateColor = "text-primary-red";
-      progressOne = "bg-primary-red";
-      progressTwo = "bg-primary-red";
-      progressThree = "bg-gray-300";
-      checkFour = "border shadow bg-white";
-      break;
-
-    default:
-      break;
-  }
-  let Reason = "";
-  data.TransitEvents?.map((e) => {
-    if (e.reason != undefined) {
-      Reason = e.reason;
-    }
-  });
-  useEffect(() => {
-    shipmentNumberState && dispatch(showUi(true));
-  }, [dispatch, shipmentNumberState]);
+  const {
+    data,
+    shipmentNumberState,
+    stateColor,
+    dateLastUpdate,
+    CurrentStatusState,
+    Reason,
+    progressOne,
+    progressTwo,
+    progressThree,
+    progressFour,
+    checkFour,
+    t,
+    dayName,
+    checkOne,
+    checkTwo,
+    checkThree,
+  } = useShippmentStatus();
   return (
     <div className="container flex justify-center my-12 h-[30vh] max-sm:h-[100vh]">
       {shipmentNumberState ? (
@@ -92,11 +33,9 @@ const ShippmentStatus = () => {
                 {`${t("shippment number")} ${data.TrackingNumber}`}
               </div>
               <div
-                className={`w-full mx-2 my-2 font-semibold text-xl  ${stateColor} text-start`}
+                className={`w-full mx-2 my-2 font-semibold text-xl ${stateColor} text-start`}
               >
-                {data.CurrentStatus
-                  ? `${t(`${data.CurrentStatus.state}`)}`
-                  : "Loading..."}
+                {data.CurrentStatus && `${t(`${data.CurrentStatus.state}`)}`}
               </div>
             </div>
             <div className="flex flex-wrap">
@@ -176,51 +115,13 @@ const ShippmentStatus = () => {
                   CurrentStatusState === "DELIVERED" ? "w-7 h-7" : "w-12 h-12"
                 }  rounded-full ${progressTwo} text-white flex justify-center items-center`}
               >
-                {CurrentStatusState === "DELIVERED" && (
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 448 512"
-                    height="18"
-                    width="18"
-                  >
-                    <path
-                      fill="#ffffff"
-                      d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"
-                    />
-                  </svg>
-                )}
-                {CurrentStatusState === "DELIVERED_TO_SENDER" && (
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 640 512"
-                    height="20"
-                    width="20"
-                  >
-                    <path
-                      fill="#ffffff"
-                      d="M48 0C21.5 0 0 21.5 0 48V368c0 26.5 21.5 48 48 48H64c0 53 43 96 96 96s96-43 96-96H384c0 53 43 96 96 96s96-43 96-96h32c17.7 0 32-14.3 32-32s-14.3-32-32-32V288 256 237.3c0-17-6.7-33.3-18.7-45.3L512 114.7c-12-12-28.3-18.7-45.3-18.7H416V48c0-26.5-21.5-48-48-48H48zM416 160h50.7L544 237.3V256H416V160zM112 416a48 48 0 1 1 96 0 48 48 0 1 1 -96 0zm368-48a48 48 0 1 1 0 96 48 48 0 1 1 0-96z"
-                    />
-                  </svg>
-                )}
-                {CurrentStatusState === "CANCELLED" && (
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 640 512"
-                    height="20"
-                    width="20"
-                  >
-                    <path
-                      fill="#ffffff"
-                      d="M48 0C21.5 0 0 21.5 0 48V368c0 26.5 21.5 48 48 48H64c0 53 43 96 96 96s96-43 96-96H384c0 53 43 96 96 96s96-43 96-96h32c17.7 0 32-14.3 32-32s-14.3-32-32-32V288 256 237.3c0-17-6.7-33.3-18.7-45.3L512 114.7c-12-12-28.3-18.7-45.3-18.7H416V48c0-26.5-21.5-48-48-48H48zM416 160h50.7L544 237.3V256H416V160zM112 416a48 48 0 1 1 96 0 48 48 0 1 1 -96 0zm368-48a48 48 0 1 1 0 96 48 48 0 1 1 0-96z"
-                    />
-                  </svg>
-                )}
+                <ProgressbarStatus CurrentStatusState={CurrentStatusState} />
               </div>
               <div
                 className={`h-1 w-[30%] ${progressThree} max-sm:hidden `}
               ></div>
               <div
-                className={`${checkFour}  ${
+                className={`dedede${checkFour}  ${
                   CurrentStatusState === "DELIVERED" ? "w-7 h-7" : "w-12 h-12"
                 } rounded-full ${progressFour} ${checkFour} text-white flex justify-center items-center`}
               >

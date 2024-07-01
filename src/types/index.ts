@@ -1,4 +1,4 @@
-export default interface data {
+export default interface IData {
   CurrentStatus?: {
     state: string;
     timestamp: string;

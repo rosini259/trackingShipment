@@ -1,8 +1,8 @@
 "use client";
 
-import { RootState } from "@/app/store";
+import { RootState } from "@/store/store";
 import data from "@/types";
-import { dateConverterToTime } from "@/utils";
+import { dateConverterToTime } from "@/utils/dateConverterToTime";
 import { useSelector } from "react-redux";
 import Address from "./Address";
 import { useTranslations } from "next-intl";

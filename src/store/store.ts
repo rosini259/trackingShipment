@@ -1,8 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
-import {shipmentSlice ,
-  newDataSlice,
-  showUiSlice,
-} from "@/features/counter/shipmentSlice";
+import { shipmentSlice } from "./shipmentSlice";
+import { showUiSlice } from "./showUiSlice";
+import { newDataSlice } from "./newDataSlice";
 
 const store = configureStore({
   reducer: {
